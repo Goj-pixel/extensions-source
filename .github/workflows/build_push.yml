@@ -1,4 +1,4 @@
-name: Rescue Build
+name: Final Rescue Build
 
 on:
   workflow_dispatch:
@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -25,20 +23,19 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build AnimeLib
+      - name: Build All
         run: |
           chmod +x ./gradlew
-          # Собираем AnimeLib. || true означает "не останавливайся при ошибке"
-          ./gradlew :ru:animelib:assembleDebug -x lint -x detekt || true
-          
-          # Если ты уже создал папку anilibria, оно соберет и её:
-          ./gradlew :ru:anilibria:assembleDebug -x lint -x detekt || true
+          # Собираем оба твоих расширения
+          ./gradlew :ru:animelib:assembleDebug -x lint || true
+          ./gradlew :ru:anilibria:assembleDebug -x lint || true
 
-      - name: Upload APKs (FORCE)
-        if: always()  # <--- ВОТ ГЛАВНАЯ МАГИЯ. Загрузить даже при ошибке!
+      - name: Upload APKs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: "Ready-APKs"
-          path: "**/*.apk" 
-          # Ищем любые APK файлы во всем проекте
+          name: "My-Aniyomi-Extensions"
+          # Используем самый широкий поиск, чтобы точно найти файлы
+          path: "src/ru/*/build/outputs/apk/debug/*.apk"
+          if-no-files-found: error
           retention-days: 1
