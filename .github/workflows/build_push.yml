@@ -1,4 +1,4 @@
-name: Final Success Build
+name: Build My AnimeLib
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build APKs
+    name: Build APK
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -23,18 +23,17 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build My Extensions
+      - name: Build AnimeLib
         run: |
           chmod +x ./gradlew
-          # ВНИМАНИЕ: Пути теперь начинаются с :src:
-          ./gradlew :src:ru:animelib:assembleDebug -x lint || true
-          ./gradlew :src:ru:anilibria:assembleDebug -x lint || true
+          # Собираем только один конкретный проект
+          ./gradlew :src:ru:animelib:assembleDebug -x lint
 
-      - name: Upload APKs
+      - name: Upload APK
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: "My-Aniyomi-Extensions"
-          path: "**/*.apk"
+          name: "AnimeLib-Custom-APK"
+          path: "src/ru/animelib/build/outputs/apk/debug/*.apk"
           if-no-files-found: error
           retention-days: 1
