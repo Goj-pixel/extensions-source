@@ -149,15 +149,25 @@ class Animelib : ParsedAnimeHttpSource() {
 
                     if (rawUrl.contains(".m3u8")) {
                         try {
-                            val hlsVideos = playlistUtils.extractFromHls(
-                                rawUrl,
-                                videoNameGen = { quality -> "Animelib: $team ($quality)" },
-                            )
-                            videoList.addAll(hlsVideos)
+                            // Ручной парсинг m3u8 в обход плеера!
+                            val masterPlaylist = client.newCall(GET(rawUrl, headers)).execute().body.string()
+                            
+                            // Ищем все ссылки внутри m3u8, которые не начинаются с #
+                            masterPlaylist.split("\n").forEach { line ->
+                                if (line.isNotBlank() && !line.startsWith("#")) {
+                                    val streamUrl = if (line.startsWith("http")) line else {
+                                        val base = rawUrl.substringBeforeLast("/")
+                                        "$base/$line"
+                                    }
+                                    // Добавляем прямую ссылку на поток
+                                    videoList.add(Video(streamUrl, "Animelib: $team (${q.quality}p)", streamUrl))
+                                }
+                            }
                         } catch (e: Exception) {
                             videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl))
                         }
                     } else {
+                        // Прямые mp4 ссылки
                         videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl))
                     }
                 }
