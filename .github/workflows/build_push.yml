@@ -26,8 +26,8 @@ jobs:
       - name: Build AnimeLib
         run: |
           chmod +x ./gradlew
-          # Собираем с правильным путем и без проверок
-          ./gradlew :src:ru:animelib:assembleDebug -x lint -x detekt -x ktlintCheck || true
+          # Убрали -x detekt -x ktlintCheck. Оставили только -x lint
+          ./gradlew :src:ru:animelib:assembleDebug -x lint || true
 
       - name: Upload EVERYTHING
         if: always()
