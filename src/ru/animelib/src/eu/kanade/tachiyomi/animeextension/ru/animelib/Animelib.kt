@@ -229,4 +229,4 @@ class Animelib : ParsedAnimeHttpSource() {
 
     @Serializable
     data class QualityDto(val href: String, val quality: Int)
-}
+} 
