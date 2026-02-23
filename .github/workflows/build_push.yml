@@ -1,12 +1,10 @@
 name: Build My AnimeLib
 
 on:
-  workflow_dispatch: # Позволяет запускать сборку кнопкой вручную
+  workflow_dispatch:
   push:
     branches:
       - main
-    paths:
-      - 'src/ru/animelib/**'
 
 jobs:
   build:
@@ -25,16 +23,15 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build AnimeLib only
+      - name: Build AnimeLib
         run: |
           chmod +x ./gradlew
-          ./gradlew :ru:animelib:assembleDebug
-
-        # Мы собираем только одну конкретную папку в режиме Debug
-
+          # Эта команда найдет правильное имя проекта сама
+          ./gradlew assembleDebug -Psubset=ru-animelib || ./gradlew :ru-animelib:assembleDebug || ./gradlew :ru:animelib:assembleDebug || ./gradlew assembleDebug
+        
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: "AnimeLib-Custom-APK"
-          path: "src/ru/animelib/build/outputs/apk/debug/*.apk"
+          path: "**/build/outputs/apk/debug/*.apk"
           retention-days: 1
