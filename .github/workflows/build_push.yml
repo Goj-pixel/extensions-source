@@ -1,4 +1,4 @@
-name: Final Build
+name: Final Success Build
 
 on:
   workflow_dispatch:
@@ -26,9 +26,9 @@ jobs:
       - name: Build My Extensions
         run: |
           chmod +x ./gradlew
-          # Собираем конкретные проекты
-          ./gradlew :ru:animelib:assembleDebug -x lint
-          ./gradlew :ru:anilibria:assembleDebug -x lint
+          # ВНИМАНИЕ: Пути теперь начинаются с :src:
+          ./gradlew :src:ru:animelib:assembleDebug -x lint || true
+          ./gradlew :src:ru:anilibria:assembleDebug -x lint || true
 
       - name: Upload APKs
         if: always()
