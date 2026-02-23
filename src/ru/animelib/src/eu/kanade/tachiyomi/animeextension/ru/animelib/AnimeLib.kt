@@ -23,7 +23,7 @@ class AnimeLib : ParsedAnimeHttpSource() {
 
     override val name = "AnimeLib"
 
-    override val baseUrl = "https://v5.animelib.org"
+    override val baseUrl = "https://animelib.org"
 
     override val lang = "ru"
 
@@ -33,7 +33,8 @@ class AnimeLib : ParsedAnimeHttpSource() {
 
     private val playlistUtils by lazy { PlaylistUtils(client, headers) }
 
-    private val backupToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDIxZDEyNTdiYzJmMTk2NjdmYzIzMWY5ZDJjMTkwOWQxMjYyZDU5MTE3YTVhNzk1ODEwMGZmY2Q5YmVkYWI3MmEyNWJiMjVhMWUxZjE0OGMiLCJpYXQiOjE3NzEzMjE5NDkuNjMyMTc3LCJuYmYiOjE3NzEzMjE5NDkuNjMyMTc5LCJleHAiOjE3NzM3NDExNDkuNjI3MDEzLCJzdWIiOiI4Mjk1NjkwIiwic2NvcGVzIjpbXX0.ef2eJAP52pVjpts70DY6HO5eS1BCyh7ypQXQV1de73lx5CyAsHuoozY7o6MKi1iSBiq82WcViUyUgFTtUpvI0GPkeJQ8AkoIwW5puM1Yx2IC9YBHEt4Nc1lwyvmGnMOnpWt0it53D_KIK1erDdRZVwOmEds67CoYwohSRTqmeqmKR-q6bE7pVvkU5tswJL1fu0DRMaZvN2arQVFakMETgMOKexqPt0ZGuUMRBwgKCXH6kTPMLQBhLObRoO7ju0gYyfOMp3k8HZkNeG1Wdy7lO9DW23RBDFMgkRqOIOQnIA7j9zHvcC40rBFi1-Eekbg4Zv3dEMOx6ngnF3L38c-pVh4EItb3MfMcu83l9TL2hW1kgLDM4kIInDBFui3IiZmekiw-T00sX-G9COw3jc9AkiwLGA1ztq2hAndC4rQQpI0GvFiCgtokyrD6KHc9KCjVcV-olwO5BepUDZgRy5mGdcHWkgs4eXbl0DRDEAjYFEBDa0n6cqbDv0y5I8CsgaLBtoGDZOOxkzXlrLs8mDVlne2UKOUGCAdoTU1TPYwFPDFUw9c-tXSOTUcMI2kTROvLB4lzOBZ5mRFLhiuvLBzgMBBnvrL3KbLDynU_Q8n3wfULy-HkH3dX7JZSjoWWjC7CSHBn9CZ482rMfYQbO6LqV6mRkn1bE0pl-ZVAHuLpE3E"
+    // ТВОЙ НОВЫЙ ТОКЕН ИЗ ЛОГОВ
+    private val backupToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYmZkZTk3OTFkNjY3MjI1MmFkMTk0ZDVkZDAwOTQyZDEyNWZhNmUzY2JhMWQ0OTkzNDc0NDIyOGMxNDAzMGM4YmMxZjg1MDc2MGU4ZDlkNzEiLCJpYXQiOjE3NzEyMzkxNTkuMTkyODQ0LCJuYmYiOjE3NzEyMzkxNTkuMTkyODQ1LCJleHAiOjE3NzM2NTgzNTkuMTg0MzUzLCJzdWIiOiI4Mjk1NjkwIiwic2NvcGVzIjpbXX0.h87fX5H03YudEiEOykIrl6EpL8QSxgCtqe7aHU23dnDO42KUZIqNxkkyIyUjjaW8x8ZlMxa9CPpEgEwFRLVELadoUDVOJrt5WjGFvVvzqBNgeh9fVIWC6Unb_5bR4Y9nAcbcpSJ8jCoGUaMC_RJpy_vNZydtKGqFQR2De66892J3EbemWckiBrv6IQUAJyiS0cSaRTmpFnyWhRjVIsef5we16LmCo_xnfdj7SatEamkLQwFLRGIB76pBcgKqYwMmU7QieocKz6WmrMnBYgoMK3fZcwl5nGpfULwp0ZlcOW5S-YdgOzzb1DI3clu9QQlNvmtOhXE8tXF3Kuv0I6eIjtW5QiY6PnhCu7cg5vxAWh9xvGR6XiLZQb1U7jeCwLHR1luUhdinvNAKu1siHLZWG2XH1n6KFXA95cZm0VkyGBHIofQUL8OdTXU3NM7JPiUfT9yDA67XOabjfOw6T_pHgKlHcVORCs5PtV1JnWvE9fPlQcjaAZ7Puen7l5DrgIDwnGLnY32IHCBZ-KuPXb4pGEPQRcFzaIbNBfEBh7TAuJocuvHh5Fwm34tk8DLhrYi6fyUvuhqFUopGkukG6-8ZrRYzvldT6hIRZIkRCeDROpSGX1Dshi5tQaX5Yx3LUthdLatx07MMX4Ljhs8_LSVg3cXJZamLes0cU8CXiWGlM8Y"
 
     private val siteId = "5"
 
@@ -62,25 +63,17 @@ class AnimeLib : ParsedAnimeHttpSource() {
         .add("sec-ch-ua-mobile", "?0")
         .add("sec-ch-ua-platform", "\"Windows\"")
 
-    override fun getAnimeUrl(anime: SAnime): String {
-        return "$baseUrl${anime.url}"
-    }
+    override fun getAnimeUrl(anime: SAnime): String = "$baseUrl/ru/anime/${anime.url}"
 
-    override fun popularAnimeRequest(page: Int): Request {
-        return GET("$apiUrl/anime?page=$page&site_id[]=$siteId&sort_by=rate_avg&type=anime", headers)
-    }
+    override fun popularAnimeRequest(page: Int): Request = GET("$apiUrl/anime?page=$page&site_id[]=$siteId&sort_by=rate_avg&type=anime", headers)
 
     override fun popularAnimeParse(response: Response) = parseAnimeList(response)
 
-    override fun searchAnimeRequest(page: Int, query: String, filters: AnimeFilterList): Request {
-        return GET("$apiUrl/anime?page=$page&site_id[]=$siteId&q=$query&type=anime", headers)
-    }
+    override fun searchAnimeRequest(page: Int, query: String, filters: AnimeFilterList): Request = GET("$apiUrl/anime?page=$page&site_id[]=$siteId&q=$query&type=anime", headers)
 
     override fun searchAnimeParse(response: Response) = parseAnimeList(response)
 
-    override fun latestUpdatesRequest(page: Int): Request {
-        return GET("$apiUrl/anime?page=$page&site_id[]=$siteId&sort_by=last_episode_at&type=anime", headers)
-    }
+    override fun latestUpdatesRequest(page: Int): Request = GET("$apiUrl/anime?page=$page&site_id[]=$siteId&sort_by=last_episode_at&type=anime", headers)
 
     override fun latestUpdatesParse(response: Response) = parseAnimeList(response)
 
@@ -88,7 +81,7 @@ class AnimeLib : ParsedAnimeHttpSource() {
         val data = json.decodeFromString<AnimeListResponse>(response.body.string())
         val animes = data.data.map { anime ->
             SAnime.create().apply {
-                title = anime.rusName ?: anime.engName ?: "Без названия"
+                title = anime.rusName ?: anime.engName ?: "No Name"
                 setUrlWithoutDomain("/anime/${anime.slug}")
                 thumbnail_url = anime.cover?.thumbnail
                 description = anime.summary
@@ -106,7 +99,7 @@ class AnimeLib : ParsedAnimeHttpSource() {
         val wrapper = json.decodeFromString<AnimeDetailsResponse>(response.body.string())
         val anime = wrapper.data
         return SAnime.create().apply {
-            title = anime.rusName ?: anime.engName ?: "Без названия"
+            title = anime.rusName ?: anime.engName ?: "No Name"
             setUrlWithoutDomain("/anime/${anime.slug}")
             thumbnail_url = anime.cover?.thumbnail
             description = anime.summary
@@ -144,26 +137,25 @@ class AnimeLib : ParsedAnimeHttpSource() {
         val wrapper = json.decodeFromString<VideoDataResponse>(response.body.string())
         val players = wrapper.data.players ?: return emptyList()
         val videoList = mutableListOf<Video>()
-
         players.forEach { player ->
             val team = player.team?.name ?: "Unknown"
-
             if (player.player == "Animelib") {
                 player.video?.quality?.forEach { q ->
                     val rawUrl = if (q.href.startsWith("http")) q.href else "$cdnUrl${q.href}"
-
                     if (rawUrl.contains(".m3u8")) {
                         try {
-                            val hlsVideos = playlistUtils.extractFromHls(
-                                rawUrl,
-                                videoNameGen = { quality: String -> "Animelib: $team ($quality)" },
+                            videoList.addAll(
+                                playlistUtils.extractFromHls(
+                                    rawUrl,
+                                    urlHeaders = headers, // Передаем все твои новые заголовки!
+                                    videoNameGen = { quality -> "AnimeLib: $team ($quality)" },
+                                ),
                             )
-                            videoList.addAll(hlsVideos)
                         } catch (e: Exception) {
-                            videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl, headers = headers))
+                            videoList.add(Video(rawUrl, "AnimeLib: $team (${q.quality}p)", rawUrl, headers = headers))
                         }
                     } else {
-                        videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl, headers = headers))
+                        videoList.add(Video(rawUrl, "AnimeLib: $team (${q.quality}p)", rawUrl, headers = headers))
                     }
                 }
             } else if (player.player == "Kodik") {
