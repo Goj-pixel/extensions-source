@@ -35,7 +35,7 @@ class AnimeLib : ParsedAnimeHttpSource() {
 
     private val playlistUtils by lazy { PlaylistUtils(client, headers) }
 
-    private val backupToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYmZkZTk3OTFkNjY3MjI1MmFkMTk0ZDVkZDAwOTQyZDEyNWZhNmUzY2JhMWQ0OTkzNDc0NDIyOGMxNDAzMGM4YmMxZjg1MDc2MGU4ZDlkNzEiLCJpYXQiOjE3NzEyMzkxNTkuMTkyODQ0LCJuYmYiOjE3NzEyMzkxNTkuMTkyODQ1LCJleHAiOjE3NzM2NTgzNTkuMT    g0MzUzLCJzdWIiOiI4Mjk1NjkwIiwic2NvcGVzIjpbXX0.h87fX5H03YudEiEOykIrl6EpL8QSxgCtqe7aHU23dnDO42KUZIqNxkkyIyUjjaW8x8ZlMxa9CPpEgEwFRLVELadoUDVOJrt5WjGFvVvzqBNgeh9fVIWC6Unb_5bR4Y9nAcbcpSJ8jCoGUaMC_RJpy_vNZydtKGqFQR2De66892J3EbemWckiBrv6IQUAJyiS0cSaRTmpFnyWhRjVIsef5we16LmCo_xnfdj7SatEamkLQwFLRGIB76pBcgKqYwMmU7QieocKz6WmrMnBYgoMK3fZcwl5nGpfULwp0ZlcOW5S-YdgOzzb1DI3clu9QQlNvmtOhXE8tXF3Kuv0I6eIjtW5QiY6PnhCu7cg5vxAWh9xvGR6XiLZQb1U7jeCwLHR1luUhdinvNAKu1siHLZWG2XH1n6KFXA95cZm0VkyGBHIofQUL8OdTXU3NM7JPiUfT9yDA67XOabjfOw6T_pHgKlHcVORCs5PtV1JnWvE9fPlQcjaAZ7Puen7l5DrgIDwnGLnY32IHCBZ-KuPXb4pGEPQRcFzaIbNBfEBh7TAuJocuvHh5Fwm34tk8DLhrYi6fyUvuhqFUopGkukG6-8ZrRYzvldT6hIRZIkRCeDROpSGX1Dshi5tQaX5Yx3LUthdLatx07MMX4Ljhs8_LSVg3cXJZamLes0cU8CXiWGlM8Y"
+    private val backupToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYmZkZTk3OTFkNjY3MjI1MmFkMTk0ZDVkZDAwOTQyZDEyNWZhNmUzY2JhMWQ0OTkzNDc0NDIyOGMxNDAzMGM4YmMxZjg1MDc2MGU4ZDlkNzEiLCJpYXQiOjE3NzEyMzkxNTkuMTkyODQ0LCJuYmYiOjE3NzEyMzkxNTkuMTkyODQ1LCJleHAiOjE3NzM2NTgzNTkuMTg0MzUzLCJzdWIiOiI4Mjk1NjkwIiwic2NvcGVzIjpbXX0.h87fX5H03YudEiEOykIrl6EpL8QSxgCtqe7aHU23dnDO42KUZIqNxkkyIyUjjaW8x8ZlMxa9CPpEgEwFRLVELadoUDVOJrt5WjGFvVvzqBNgeh9fVIWC6Unb_5bR4Y9nAcbcpSJ8jCoGUaMC_RJpy_vNZydtKGqFQR2De66892J3EbemWckiBrv6IQUAJyiS0cSaRTmpFnyWhRjVIsef5we16LmCo_xnfdj7SatEamkLQwFLRGIB76pBcgKqYwMmU7QieocKz6WmrMnBYgoMK3fZcwl5nGpfULwp0ZlcOW5S-YdgOzzb1DI3clu9QQlNvmtOhXE8tXF3Kuv0I6eIjtW5QiY6PnhCu7cg5vxAWh9xvGR6XiLZQb1U7jeCwLHR1luUhdinvNAKu1siHLZWG2XH1n6KFXA95cZm0VkyGBHIofQUL8OdTXU3NM7JPiUfT9yDA67XOabjfOw6T_pHgKlHcVORCs5PtV1JnWvE9fPlQcjaAZ7Puen7l5DrgIDwnGLnY32IHCBZ-KuPXb4pGEPQRcFzaIbNBfEBh7TAuJocuvHh5Fwm34tk8DLhrYi6fyUvuhqFUopGkukG6-8ZrRYzvldT6hIRZIkRCeDROpSGX1Dshi5tQaX5Yx3LUthdLatx07MMX4Ljhs8_LSVg3cXJZamLes0cU8CXiWGlM8Y"
 
     private val siteId = "5"
 
@@ -154,8 +154,7 @@ class AnimeLib : ParsedAnimeHttpSource() {
                             videoList.addAll(
                                 playlistUtils.extractFromHls(
                                     rawUrl,
-                                    headers,
-                                    videoNameGen = { quality -> "AnimeLib: $team ($quality)" },
+                                    videoNameGen = { quality: String -> "AnimeLib: $team ($quality)" },
                                 ),
                             )
                         } catch (e: Exception) {
@@ -228,7 +227,7 @@ class AnimeLib : ParsedAnimeHttpSource() {
     data class StatusDto(val id: Int)
 
     @Serializable
-    data class LinksDto(val next: String? = null)
+    class LinksDto(val next: String? = null)
 
     @Serializable
     data class EpisodeListResponse(val data: List<EpisodeDto>)
