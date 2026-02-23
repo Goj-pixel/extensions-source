@@ -1,4 +1,4 @@
-name: Build NO CHECKS
+name: Ultimate Build
 
 on:
   workflow_dispatch:
@@ -23,23 +23,17 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build Force
+      - name: Build AnimeLib
         run: |
           chmod +x ./gradlew
-          # ВОТ ОНО! Мы отключаем lint, detekt, ktlint и lintKotlin
-          # Это заставит его собрать APK, даже если код "некрасивый"
-          ./gradlew :my-animelib-v5:assembleDebug \
-            -x lint \
-            -x lintKotlin \
-            -x lintKotlinMain \
-            -x ktlintCheck \
-            -x detekt
+          # Сборка с отключением проверок
+          ./gradlew :ru:animelib:assembleDebug -x lint -x lintKotlin -x detekt
 
       - name: Upload APK
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: "AnimeLib-Ready"
+          name: "AnimeLib-Fixed-V5"
           path: "**/*.apk"
           if-no-files-found: error
           retention-days: 1
