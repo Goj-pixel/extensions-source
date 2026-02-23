@@ -169,7 +169,7 @@ class Animelib : ParsedAnimeHttpSource() {
             } else if (player.player == "Kodik") {
                 player.src?.let { src ->
                     val url = if (src.startsWith("//")) "https:$src" else src
-                    videoList.add(Video(url, "Kodik: $team", url, headers = headers))
+                    videoList.add(Video(url, "...", url, headers = headers))
                 }
             }
         }
