@@ -59,5 +59,5 @@ fun File.eachDir(block: (File) -> Unit) {
         }
     }
 }
-include(":my-animelib-v5")
-project(":my-animelib-v5").projectDir = file("src/ru/animelib")
+include(":ru-animelib")
+project(":ru-animelib").projectDir = file("src/ru/animelib")
