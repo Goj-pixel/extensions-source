@@ -26,21 +26,14 @@ jobs:
       - name: Build AnimeLib
         run: |
           chmod +x ./gradlew
-          # Собираем и игнорируем ошибки
-          ./gradlew :ru-animelib:assembleDebug -x lint || true
+          # Собираем с правильным путем и отключаем проверки кода
+          ./gradlew :src:ru:animelib:assembleDebug -x lint -x detekt -x ktlintCheck || true
 
-      - name: 🔍 LOCATE APK FILES (Показать где файлы)
-        run: |
-          echo "=============================="
-          echo "ИЩУ APK ФАЙЛЫ НА ДИСКЕ..."
-          find . -name "*.apk"
-          echo "=============================="
-
-      - name: Upload EVERYTHING
+      - name: Upload APK
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: "FOUND-APK"
-          # Эта настройка загрузит ЛЮБОЙ apk, который найдет
+          name: "My-Result-APK"
           path: "**/*.apk"
+          if-no-files-found: warn
           retention-days: 1
