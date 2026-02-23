@@ -6,7 +6,7 @@ ext {
     extName = 'Animelib'
     pkgNameSuf = 'ru.animelib'
     extClass = '.Animelib'
-    extVersionCode = 2
+    extVersionCode = 3
     isNsfw = false
 }
 
