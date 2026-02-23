@@ -19,17 +19,21 @@ import java.util.Locale
 class Animelib : AnimeHttpSource() {
 
     override val name = "Animelib"
+
     override val baseUrl = "https://v5.animelib.org"
+
     override val lang = "ru"
+
     override val supportsLatest = true
 
     private val apiUrl = "https://hapi.hentaicdn.org/api"
+
     private val cdnUrl = "https://cache.lib.social"
 
     private val playlistUtils by lazy { PlaylistUtils(client, headers) }
+
     private val dateFormatter by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH) }
 
-    // Твой токен из консоли
     private val backupToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDIxZDEyNTdiYzJmMTk2NjdmYzIzMWY5ZDJjMTkwOWQxMjYyZDU5MTE3YTVhNzk1ODEwMGZmY2Q5YmVkYWI3MmEyNWJiMjVhMWUxZjE0OGMiLCJpYXQiOjE3NzEzMjE5NDkuNjMyMTc3LCJuYmYiOjE3NzEzMjE5NDkuNjMyMTc5LCJleHAiOjE3NzM3NDExNDkuNjI3MDEzLCJzdWIiOiI4Mjk1NjkwIiwic2NvcGVzIjpbXX0.ef2eJAP52pVjpts70DY6HO5eS1BCyh7ypQXQV1de73lx5CyAsHuoozY7o6MKi1iSBiq82WcViUyUgFTtUpvI0GPkeJQ8AkoIwW5puM1Yx2IC9YBHEt4Nc1lwyvmGnMOnpWt0it53D_KIK1erDdRZVwOmEds67CoYwohSRTqmeqmKR-q6bE7pVvkU5tswJL1fu0DRMaZvN2arQVFakMETgMOKexqPt0ZGuUMRBwgKCXH6kTPMLQBhLObRoO7ju0gYyfOMp3k8HZkNeG1Wdy7lO9DW23RBDFMgkRqOIOQnIA7j9zHvcC40rBFi1-Eekbg4Zv3dEMOx6ngnF3L38c-pVh4EItb3MfMcu83l9TL2hW1kgLDM4kIInDBFui3IiZmekiw-T00sX-G9COw3jc9AkiwLGA1ztq2hAndC4rQQpI0GvFiCgtokyrD6KHc9KCjVcV-olwO5BepUDZgRy5mGdcHWkgs4eXbl0DRDEAjYFEBDa0n6cqbDv0y5I8CsgaLBtoGDZOOxkzXlrLs8mDVlne2UKOUGCAdoTU1TPYwFPDFUw9c-tXSOTUcMI2kTROvLB4lzOBZ5mRFLhiuvLBzgMBBnvrL3KbLDynU_Q8n3wfULy-HkH3dX7JZSjoWWjC7CSHBn9CZ482rMfYQbO6LqV6mRkn1bE0pl-ZVAHuLpE3E"
 
     private fun getAuthToken(): String {
@@ -43,26 +47,25 @@ class Animelib : AnimeHttpSource() {
         .add("Referer", "$baseUrl/")
         .add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36")
 
-    // Исправление Глобуса: теперь открывает сайт
     override fun getAnimeUrl(anime: SAnime) = "$baseUrl/ru/anime/${anime.url}"
 
-    // Популярное
     override fun popularAnimeRequest(page: Int) = GET("$apiUrl/anime?page=$page&site_id[]=5&sort_by=rate_avg&type=anime", headers)
+
     override fun popularAnimeParse(response: Response): AnimesPage {
         val res = response.parseAs<AnimeList>()
         return AnimesPage(res.data.map { it.toSAnime() }, res.links?.next != null)
     }
 
-    // Детали
     override fun animeDetailsRequest(anime: SAnime) = GET("$apiUrl/anime/${anime.url}?fields[]=summary&fields[]=status", headers)
+
     override fun animeDetailsParse(response: Response) = response.parseAs<AnimeInfo>().data.toSAnime()
 
-    // Список серий
     override fun episodeListRequest(anime: SAnime) = GET("$apiUrl/episodes?anime_id=${anime.url}", headers)
+
     override fun episodeListParse(response: Response) = response.parseAs<EpisodeList>().data.map { it.toSEpisode() }.reversed()
 
-    // Видео (Плеер)
     override fun videoListRequest(episode: SEpisode) = GET("$apiUrl/episodes/${episode.url}", headers)
+
     override fun videoListParse(response: Response): List<Video> {
         val players = response.parseAs<EpisodeVideoData>().data.players ?: return emptyList()
         return players.flatMap { player ->
@@ -71,7 +74,7 @@ class Animelib : AnimeHttpSource() {
                 player.video.quality.flatMap { q ->
                     val url = if (q.href.startsWith("http")) q.href else "$cdnUrl${q.href}"
                     if (url.contains(".m3u8")) {
-                        playlistUtils.extractFromHls(url, urlHeaders = headers, videoNameGen = { "$team - $it (Animelib)" })
+                        playlistUtils.extractFromHls(url, videoNameGen = { quality: String -> "$team - $quality (Animelib)" })
                     } else {
                         listOf(Video(url, "$team - ${q.quality}p", url, headers = headers))
                     }
@@ -86,16 +89,17 @@ class Animelib : AnimeHttpSource() {
     }
 
     override fun latestUpdatesRequest(page: Int) = GET("$apiUrl/anime?page=$page&site_id[]=5&sort_by=last_episode_at&type=anime", headers)
+
     override fun latestUpdatesParse(response: Response) = popularAnimeParse(response)
 
     override fun searchAnimeRequest(page: Int, query: String, filters: AnimeFilterList): Request {
         return GET("$apiUrl/anime?q=$query&page=$page&site_id[]=5&type=anime", headers)
     }
+
     override fun searchAnimeParse(response: Response) = popularAnimeParse(response)
 
-    // Маппинг данных из DTO в Aniyomi
     private fun AnimeData.toSAnime() = SAnime.create().apply {
-        url = href.split("--").last() // Берем ID из slug_url
+        url = href.split("--").last()
         title = rusName
         thumbnail_url = cover.thumbnail
         description = summary
