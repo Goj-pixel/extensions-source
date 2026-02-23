@@ -54,12 +54,18 @@ class Animelib : ParsedAnimeHttpSource() {
     override fun headersBuilder(): Headers.Builder = super.headersBuilder()
         .add("Authorization", getAuthToken())
         .add("site-id", siteId)
+        .add("client-time-zone", "Asia/Krasnoyarsk")
         .add("Referer", "$baseUrl/")
         .add("Origin", baseUrl)
         .add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36")
         .add("sec-ch-ua", "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"")
         .add("sec-ch-ua-mobile", "?0")
         .add("sec-ch-ua-platform", "\"Windows\"")
+
+    // ВОТ ОНО! Указываем Глобусу открывать нормальный сайт, а не API
+    override fun getAnimeUrl(anime: SAnime): String {
+        return "$baseUrl${anime.url}"
+    }
 
     override fun popularAnimeRequest(page: Int): Request {
         return GET("$apiUrl/anime?page=$page&site_id[]=$siteId&sort_by=rate_avg&type=anime", headers)
@@ -139,36 +145,37 @@ class Animelib : ParsedAnimeHttpSource() {
         val wrapper = json.decodeFromString<VideoDataResponse>(response.body.string())
         val players = wrapper.data.players ?: return emptyList()
         val videoList = mutableListOf<Video>()
+
         players.forEach { player ->
             val team = player.team?.name ?: "Unknown"
+
             if (player.player == "Animelib") {
                 player.video?.quality?.forEach { q ->
                     val rawUrl = if (q.href.startsWith("http")) q.href else "$cdnUrl${q.href}"
+
                     if (rawUrl.contains(".m3u8")) {
                         try {
-                            val masterPlaylist = client.newCall(GET(rawUrl, headers)).execute().body.string()
-                            masterPlaylist.split("\n").forEach { line ->
-                                if (line.isNotBlank() && !line.startsWith("#")) {
-                                    val streamUrl = if (line.startsWith("http")) {
-                                        line
-                                    } else {
-                                        val base = rawUrl.substringBeforeLast("/")
-                                        "$base/$line"
-                                    }
-                                    videoList.add(Video(streamUrl, "Animelib: $team (${q.quality}p)", streamUrl))
-                                }
-                            }
+                            // И здесь тоже передаем заголовки!
+                            val hlsVideos = playlistUtils.extractFromHls(
+                                rawUrl,
+                                urlHeaders = headers,
+                                videoNameGen = { quality -> "Animelib: $team ($quality)" }
+                            )
+                            videoList.addAll(hlsVideos)
                         } catch (e: Exception) {
-                            videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl))
+                            // ВОТ ОН ФИКС ПЛЕЕРА: headers = headers
+                            videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl, headers = headers))
                         }
                     } else {
-                        videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl))
+                        // ВОТ ОН ФИКС ПЛЕЕРА: headers = headers
+                        videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl, headers = headers))
                     }
                 }
             } else if (player.player == "Kodik") {
                 player.src?.let { src ->
                     val url = if (src.startsWith("//")) "https:$src" else src
-                    videoList.add(Video(url, "Kodik: $team", url))
+                    // ВОТ ОН ФИКС ПЛЕЕРА: headers = headers
+                    videoList.add(Video(url, "Kodik: $team", url, headers = headers))
                 }
             }
         }
