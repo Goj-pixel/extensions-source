@@ -1,4 +1,4 @@
-name: Final Success Build
+name: Final Build
 
 on:
   workflow_dispatch:
@@ -23,22 +23,18 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build All
+      - name: Build My Extensions
         run: |
           chmod +x ./gradlew
-          # Собираем оба расширения. Игнорируем ошибки оформления (lint).
-          ./gradlew :ru:animelib:assembleDebug -x lint || true
-          ./gradlew :ru:anilibria:assembleDebug -x lint || true
-
-      - name: List files (Debug)
-        run: find . -name "*.apk" # Эта команда покажет нам в логах, где лежат файлы
+          # Собираем конкретные проекты
+          ./gradlew :ru:animelib:assembleDebug -x lint
+          ./gradlew :ru:anilibria:assembleDebug -x lint
 
       - name: Upload APKs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: "Aniyomi-Extensions-Ready"
-          # ТЕПЕРЬ ИЩЕМ ВЕЗДЕ
+          name: "My-Aniyomi-Extensions"
           path: "**/*.apk"
           if-no-files-found: error
           retention-days: 1
