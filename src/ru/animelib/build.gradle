@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlinx-serialization'
 
 ext {
-    appName = 'Aniyomi: AnimeLib'
+    extName = 'Animelib'
     pkgNameSuf = 'ru.animelib'
     extClass = '.Animelib'
     extVersionCode = 1
