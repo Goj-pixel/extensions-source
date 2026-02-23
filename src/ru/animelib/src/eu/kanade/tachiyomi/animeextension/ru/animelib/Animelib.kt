@@ -139,27 +139,22 @@ class Animelib : ParsedAnimeHttpSource() {
         val wrapper = json.decodeFromString<VideoDataResponse>(response.body.string())
         val players = wrapper.data.players ?: return emptyList()
         val videoList = mutableListOf<Video>()
-
         players.forEach { player ->
             val team = player.team?.name ?: "Unknown"
-
             if (player.player == "Animelib") {
                 player.video?.quality?.forEach { q ->
                     val rawUrl = if (q.href.startsWith("http")) q.href else "$cdnUrl${q.href}"
-
                     if (rawUrl.contains(".m3u8")) {
                         try {
-                            // Ручной парсинг m3u8 в обход плеера!
                             val masterPlaylist = client.newCall(GET(rawUrl, headers)).execute().body.string()
-                            
-                            // Ищем все ссылки внутри m3u8, которые не начинаются с #
                             masterPlaylist.split("\n").forEach { line ->
                                 if (line.isNotBlank() && !line.startsWith("#")) {
-                                    val streamUrl = if (line.startsWith("http")) line else {
+                                    val streamUrl = if (line.startsWith("http")) {
+                                        line
+                                    } else {
                                         val base = rawUrl.substringBeforeLast("/")
                                         "$base/$line"
                                     }
-                                    // Добавляем прямую ссылку на поток
                                     videoList.add(Video(streamUrl, "Animelib: $team (${q.quality}p)", streamUrl))
                                 }
                             }
@@ -167,7 +162,6 @@ class Animelib : ParsedAnimeHttpSource() {
                             videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl))
                         }
                     } else {
-                        // Прямые mp4 ссылки
                         videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl))
                     }
                 }
