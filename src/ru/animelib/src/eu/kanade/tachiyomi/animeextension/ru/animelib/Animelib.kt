@@ -62,7 +62,6 @@ class Animelib : ParsedAnimeHttpSource() {
         .add("sec-ch-ua-mobile", "?0")
         .add("sec-ch-ua-platform", "\"Windows\"")
 
-    // ВОТ ОНО! Указываем Глобусу открывать нормальный сайт, а не API
     override fun getAnimeUrl(anime: SAnime): String {
         return "$baseUrl${anime.url}"
     }
@@ -155,26 +154,22 @@ class Animelib : ParsedAnimeHttpSource() {
 
                     if (rawUrl.contains(".m3u8")) {
                         try {
-                            // И здесь тоже передаем заголовки!
                             val hlsVideos = playlistUtils.extractFromHls(
                                 rawUrl,
                                 urlHeaders = headers,
-                                videoNameGen = { quality -> "Animelib: $team ($quality)" }
+                                videoNameGen = { quality -> "Animelib: $team ($quality)" },
                             )
                             videoList.addAll(hlsVideos)
                         } catch (e: Exception) {
-                            // ВОТ ОН ФИКС ПЛЕЕРА: headers = headers
                             videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl, headers = headers))
                         }
                     } else {
-                        // ВОТ ОН ФИКС ПЛЕЕРА: headers = headers
                         videoList.add(Video(rawUrl, "Animelib: $team (${q.quality}p)", rawUrl, headers = headers))
                     }
                 }
             } else if (player.player == "Kodik") {
                 player.src?.let { src ->
                     val url = if (src.startsWith("//")) "https:$src" else src
-                    // ВОТ ОН ФИКС ПЛЕЕРА: headers = headers
                     videoList.add(Video(url, "Kodik: $team", url, headers = headers))
                 }
             }
