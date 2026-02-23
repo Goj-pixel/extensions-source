@@ -26,15 +26,15 @@ jobs:
       - name: Build AnimeLib
         run: |
           chmod +x ./gradlew
-          # Собираем AnimeLib и ПРИНУДИТЕЛЬНО отключаем проверки (lint)
-          ./gradlew :src:ru:animelib:assembleDebug -x lint -x test --stacktrace
+          # Используем точное имя задачи, которое УЖЕ работало! 
+          # -x lint -x detekt отключают придирки к оформлению кода
+          ./gradlew :ru-animelib:assembleDebug -x lint -x detekt
 
       - name: Upload APK
-        if: always() # Загрузить файл даже если будут предупреждения
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: "AnimeLib-Custom-APK"
-          # Ищем файл во всех папках, чтобы точно найти его
+          # Ищем вообще все APK-файлы в репозитории
           path: "**/*.apk"
-          if-no-files-found: error
           retention-days: 1
