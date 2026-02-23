@@ -159,7 +159,7 @@ class Animelib : ParsedAnimeHttpSource() {
     override fun popularAnimeFromElement(element: Element) = SAnime.create()
     override fun popularAnimeNextPageSelector() = null
     override fun popularAnimeSelector() = ""
-    override fun videoFromElement(element: Element) = null
+    override fun videoFromElement(element: Element): Video = throw Exception("Not used")
     override fun videoListSelector() = ""
     override fun videoUrlParse(document: Document) = ""
 
