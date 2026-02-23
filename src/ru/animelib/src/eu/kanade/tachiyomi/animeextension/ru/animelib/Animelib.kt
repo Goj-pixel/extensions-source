@@ -156,8 +156,7 @@ class Animelib : ParsedAnimeHttpSource() {
                         try {
                             val hlsVideos = playlistUtils.extractFromHls(
                                 rawUrl,
-                                urlHeaders = headers,
-                                videoNameGen = { quality -> "Animelib: $team ($quality)" },
+                                videoNameGen = { quality -> "Animelib: $team ($quality)" }
                             )
                             videoList.addAll(hlsVideos)
                         } catch (e: Exception) {
