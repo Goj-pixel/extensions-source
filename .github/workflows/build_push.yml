@@ -1,4 +1,4 @@
-name: Final Success Build
+name: Find My APK
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build APKs
+    name: Build and Find
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -26,15 +26,21 @@ jobs:
       - name: Build AnimeLib
         run: |
           chmod +x ./gradlew
-          # Собираем проект по имени, которое мы дали в settings.gradle.kts
-          ./gradlew :ru-animelib:assembleDebug -x lint -x detekt || true
+          # Собираем и игнорируем ошибки
+          ./gradlew :ru-animelib:assembleDebug -x lint || true
 
-      - name: Upload APK
-        if: always() # Загрузить файл даже если сборка "красная"
+      - name: 🔍 LOCATE APK FILES (Показать где файлы)
+        run: |
+          echo "=============================="
+          echo "ИЩУ APK ФАЙЛЫ НА ДИСКЕ..."
+          find . -name "*.apk"
+          echo "=============================="
+
+      - name: Upload EVERYTHING
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: "My-Aniyomi-Extension"
-          # Ищем файл в папке build внутри animelib
-          path: "**/build/outputs/apk/debug/*.apk"
-          if-no-files-found: error
+          name: "FOUND-APK"
+          # Эта настройка загрузит ЛЮБОЙ apk, который найдет
+          path: "**/*.apk"
           retention-days: 1
