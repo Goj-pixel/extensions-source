@@ -1,4 +1,4 @@
-name: Build My AnimeLib
+name: God Mode Build
 
 on:
   workflow_dispatch:
@@ -23,18 +23,17 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build AnimeLib
+      - name: Build Custom Project
         run: |
           chmod +x ./gradlew
-          # Используем точное имя задачи, которое УЖЕ работало! 
-          # -x lint -x detekt отключают придирки к оформлению кода
-          ./gradlew :ru-animelib:assembleDebug -x lint -x detekt
+          # Собираем наш "взломанный" проект по его уникальному имени
+          ./gradlew :my-animelib-v5:assembleDebug -x lint
 
       - name: Upload APK
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: "AnimeLib-Custom-APK"
-          # Ищем вообще все APK-файлы в репозитории
+          name: "AnimeLib-V5-Fixed"
           path: "**/*.apk"
+          if-no-files-found: error
           retention-days: 1
