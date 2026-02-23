@@ -28,7 +28,8 @@ jobs:
       - name: Build AnimeLib only
         run: |
           chmod +x ./gradlew
-          ./gradlew :ru-animelib:assembleDebug
+          ./gradlew :ru:animelib:assembleDebug
+
         # Мы собираем только одну конкретную папку в режиме Debug
 
       - name: Upload APK
