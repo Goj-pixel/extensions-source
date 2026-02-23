@@ -18,6 +18,8 @@ import okhttp3.Response
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import uy.kohesive.injekt.injectLazy
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AnimeLib : ParsedAnimeHttpSource() {
 
@@ -33,14 +35,15 @@ class AnimeLib : ParsedAnimeHttpSource() {
 
     private val playlistUtils by lazy { PlaylistUtils(client, headers) }
 
-    // ТВОЙ НОВЫЙ ТОКЕН ИЗ ЛОГОВ
-    private val backupToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYmZkZTk3OTFkNjY3MjI1MmFkMTk0ZDVkZDAwOTQyZDEyNWZhNmUzY2JhMWQ0OTkzNDc0NDIyOGMxNDAzMGM4YmMxZjg1MDc2MGU4ZDlkNzEiLCJpYXQiOjE3NzEyMzkxNTkuMTkyODQ0LCJuYmYiOjE3NzEyMzkxNTkuMTkyODQ1LCJleHAiOjE3NzM2NTgzNTkuMTg0MzUzLCJzdWIiOiI4Mjk1NjkwIiwic2NvcGVzIjpbXX0.h87fX5H03YudEiEOykIrl6EpL8QSxgCtqe7aHU23dnDO42KUZIqNxkkyIyUjjaW8x8ZlMxa9CPpEgEwFRLVELadoUDVOJrt5WjGFvVvzqBNgeh9fVIWC6Unb_5bR4Y9nAcbcpSJ8jCoGUaMC_RJpy_vNZydtKGqFQR2De66892J3EbemWckiBrv6IQUAJyiS0cSaRTmpFnyWhRjVIsef5we16LmCo_xnfdj7SatEamkLQwFLRGIB76pBcgKqYwMmU7QieocKz6WmrMnBYgoMK3fZcwl5nGpfULwp0ZlcOW5S-YdgOzzb1DI3clu9QQlNvmtOhXE8tXF3Kuv0I6eIjtW5QiY6PnhCu7cg5vxAWh9xvGR6XiLZQb1U7jeCwLHR1luUhdinvNAKu1siHLZWG2XH1n6KFXA95cZm0VkyGBHIofQUL8OdTXU3NM7JPiUfT9yDA67XOabjfOw6T_pHgKlHcVORCs5PtV1JnWvE9fPlQcjaAZ7Puen7l5DrgIDwnGLnY32IHCBZ-KuPXb4pGEPQRcFzaIbNBfEBh7TAuJocuvHh5Fwm34tk8DLhrYi6fyUvuhqFUopGkukG6-8ZrRYzvldT6hIRZIkRCeDROpSGX1Dshi5tQaX5Yx3LUthdLatx07MMX4Ljhs8_LSVg3cXJZamLes0cU8CXiWGlM8Y"
+    private val backupToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYmZkZTk3OTFkNjY3MjI1MmFkMTk0ZDVkZDAwOTQyZDEyNWZhNmUzY2JhMWQ0OTkzNDc0NDIyOGMxNDAzMGM4YmMxZjg1MDc2MGU4ZDlkNzEiLCJpYXQiOjE3NzEyMzkxNTkuMTkyODQ0LCJuYmYiOjE3NzEyMzkxNTkuMTkyODQ1LCJleHAiOjE3NzM2NTgzNTkuMT    g0MzUzLCJzdWIiOiI4Mjk1NjkwIiwic2NvcGVzIjpbXX0.h87fX5H03YudEiEOykIrl6EpL8QSxgCtqe7aHU23dnDO42KUZIqNxkkyIyUjjaW8x8ZlMxa9CPpEgEwFRLVELadoUDVOJrt5WjGFvVvzqBNgeh9fVIWC6Unb_5bR4Y9nAcbcpSJ8jCoGUaMC_RJpy_vNZydtKGqFQR2De66892J3EbemWckiBrv6IQUAJyiS0cSaRTmpFnyWhRjVIsef5we16LmCo_xnfdj7SatEamkLQwFLRGIB76pBcgKqYwMmU7QieocKz6WmrMnBYgoMK3fZcwl5nGpfULwp0ZlcOW5S-YdgOzzb1DI3clu9QQlNvmtOhXE8tXF3Kuv0I6eIjtW5QiY6PnhCu7cg5vxAWh9xvGR6XiLZQb1U7jeCwLHR1luUhdinvNAKu1siHLZWG2XH1n6KFXA95cZm0VkyGBHIofQUL8OdTXU3NM7JPiUfT9yDA67XOabjfOw6T_pHgKlHcVORCs5PtV1JnWvE9fPlQcjaAZ7Puen7l5DrgIDwnGLnY32IHCBZ-KuPXb4pGEPQRcFzaIbNBfEBh7TAuJocuvHh5Fwm34tk8DLhrYi6fyUvuhqFUopGkukG6-8ZrRYzvldT6hIRZIkRCeDROpSGX1Dshi5tQaX5Yx3LUthdLatx07MMX4Ljhs8_LSVg3cXJZamLes0cU8CXiWGlM8Y"
 
     private val siteId = "5"
 
     private val apiUrl = "https://hapi.hentaicdn.org/api"
 
     private val cdnUrl = "https://cache.lib.social"
+
+    private val dateFormatter by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH) }
 
     private fun getAuthToken(): String {
         return try {
@@ -123,7 +126,11 @@ class AnimeLib : ParsedAnimeHttpSource() {
                 name = "Эпизод ${ep.number} - ${ep.name ?: ""}"
                 episode_number = ep.number.toFloat()
                 url = "/episodes/${ep.id}"
-                date_upload = System.currentTimeMillis()
+                date_upload = try {
+                    dateFormatter.parse(ep.date ?: "")?.time ?: 0L
+                } catch (e: Exception) {
+                    0L
+                }
             }
         }.reversed()
     }
@@ -147,7 +154,7 @@ class AnimeLib : ParsedAnimeHttpSource() {
                             videoList.addAll(
                                 playlistUtils.extractFromHls(
                                     rawUrl,
-                                    urlHeaders = headers, // Передаем все твои новые заголовки!
+                                    headers,
                                     videoNameGen = { quality -> "AnimeLib: $team ($quality)" },
                                 ),
                             )
@@ -227,7 +234,12 @@ class AnimeLib : ParsedAnimeHttpSource() {
     data class EpisodeListResponse(val data: List<EpisodeDto>)
 
     @Serializable
-    data class EpisodeDto(val id: Int, val number: String, val name: String? = null)
+    data class EpisodeDto(
+        val id: Int,
+        val number: String,
+        val name: String? = null,
+        @SerialName("created_at") val date: String? = null,
+    )
 
     @Serializable
     data class VideoDataResponse(val data: VideoWrapper)
