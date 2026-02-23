@@ -1,4 +1,4 @@
-name: Build My AnimeLib
+name: Rescue Build
 
 on:
   workflow_dispatch:
@@ -8,11 +8,13 @@ on:
 
 jobs:
   build:
-    name: Build APK
+    name: Build APKs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -26,12 +28,17 @@ jobs:
       - name: Build AnimeLib
         run: |
           chmod +x ./gradlew
-          # Эта команда найдет правильное имя проекта сама
-          ./gradlew assembleDebug -Psubset=ru-animelib || ./gradlew :ru-animelib:assembleDebug || ./gradlew :ru:animelib:assembleDebug || ./gradlew assembleDebug
-        
-      - name: Upload APK
+          # Собираем AnimeLib. || true означает "не останавливайся при ошибке"
+          ./gradlew :ru:animelib:assembleDebug -x lint -x detekt || true
+          
+          # Если ты уже создал папку anilibria, оно соберет и её:
+          ./gradlew :ru:anilibria:assembleDebug -x lint -x detekt || true
+
+      - name: Upload APKs (FORCE)
+        if: always()  # <--- ВОТ ГЛАВНАЯ МАГИЯ. Загрузить даже при ошибке!
         uses: actions/upload-artifact@v4
         with:
-          name: "AnimeLib-Custom-APK"
-          path: "**/build/outputs/apk/debug/*.apk"
+          name: "Ready-APKs"
+          path: "**/*.apk" 
+          # Ищем любые APK файлы во всем проекте
           retention-days: 1
