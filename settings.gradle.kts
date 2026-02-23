@@ -60,4 +60,3 @@ fun File.eachDir(block: (File) -> Unit) {
     }
 }
 include(":src:ru:animelib")
-include(":src:ru:anilibria")
