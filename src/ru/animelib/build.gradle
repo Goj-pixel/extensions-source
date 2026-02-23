@@ -6,8 +6,8 @@ ext {
     extName = 'Animelib'
     pkgNameSuf = 'ru.animelib'
     extClass = '.Animelib'
-    extVersionCode = 3
-    isNsfw = false
+    extVersionCode = 10
+    isNsfw = true
 }
 
 apply from: "$rootDir/common.gradle"
