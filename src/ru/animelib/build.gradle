@@ -5,8 +5,8 @@ apply plugin: 'kotlinx-serialization'
 ext {
     extName = 'Animelib'
     pkgNameSuf = 'ru.animelib'
-    extClass = '.Animelib'
-    extVersionCode = 11
+    extClass = '.AnimeLib'  // <--- ВОТ ОНО! Большая буква L
+    extVersionCode = 25     // Поднял версию, чтобы телефон точно обновил
     isNsfw = true
 }
 
